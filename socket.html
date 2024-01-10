@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text">
+    <button>发起socket请求</button>
+    <div>
+        <textarea name="" id="" cols="30" rows="10"></textarea>
+    </div>
+    <script>
+        const input = document.querySelector('input')
+        const button = document.querySelector('button')
+        const textarea = document.querySelector('textarea')
+        // 创建 websocket 服务
+        const ws = new WebSocket('ws://localhost:3000')
+        // open事件 是当socket连接成功后执行
+        ws.addEventListener('open', () => {
+            textarea.innerHTML = '连接成功'
+        })
+
+        button.addEventListener('click', () => {
+            // send 方法是给服务端发送消息
+            ws.send(input.value)
+        })
+
+        // message事件 接收服务端发送过来的数据
+        ws.addEventListener('message', data => {
+            console.log('socket返回的数据', data);
+            textarea.innerHTML = data.data
+        })
+
+        // close事件 断开连接
+        ws.addEventListener('close', () => {
+            textarea.innerHTML = '连接已断开'
+        })
+    </script>
+</body>
+
+</html>

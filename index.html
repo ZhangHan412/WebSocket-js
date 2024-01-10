@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .user {
+            font-family: Arial, sans-serif;
+            animation: colorChange 5s infinite;
+        }
+
+        @keyframes colorChange {
+            0% {
+                color: blue;
+            }
+
+            25% {
+                color: green;
+            }
+
+            50% {
+                color: yellow;
+            }
+
+            75% {
+                color: orange;
+            }
+
+            100% {
+                color: red;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1></h1>
+    <button class="create">创建用户并加入房间</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const h1 = document.querySelector('h1')
+        const create = document.querySelector('.create')
+        const socket = io('http://localhost:3000')
+        socket.on('connect', () => {
+            console.log('socket连接成功');
+        })
+        // 接收服务端发送的数据
+        socket.on('send', data => {
+            console.log(data);
+        })
+        // 向服务端发送数据
+        socket.emit('name', { name: 'zh' })
+        // 接收服务端发送的数据
+        socket.on('send', data => {
+            console.log('服务端发送过来的数据:', data);
+        })
+
+        socket.on('event', data => {
+            console.log('服务端发送的广播信息', data);
+            const h1 = document.createElement('h1');
+            h1.textContent = data;
+            h1.classList = 'user'
+            document.body.appendChild(h1);
+        })
+        create.addEventListener('click', () => {
+            socket.emit('creatUser', { name: Date.now() % 10000 })
+        })
+    </script>
+</body>
+
+</html>
